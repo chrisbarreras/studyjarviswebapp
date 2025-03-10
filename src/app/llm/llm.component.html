@@ -1,0 +1,37 @@
+<!-- src/app/llm/llm.component.html -->
+<div>
+  <h2>LLM Interface</h2>
+
+  <section>
+    <h3>Ask a Question</h3>
+    <form [formGroup]="questionForm" (ngSubmit)="askQuestion()">
+      <input formControlName="question" placeholder="Enter your question">
+      <button type="submit">Ask</button>
+    </form>
+    <p>{{ questionAnswer }}</p>
+  </section>
+
+  <section>
+    <h3>Create Notes</h3>
+    <button (click)="createNotes()">Create Notes</button>
+    <pre>{{ notes }}</pre>
+  </section>
+
+  <section>
+    <h3>Create Key Points</h3>
+    <button (click)="createKeyPoints()">Create Key Points</button>
+    <pre>{{ keyPoints }}</pre>
+  </section>
+
+  <section>
+    <h3>Create Quiz</h3>
+    <button (click)="createQuiz()">Create Quiz</button>
+    <pre>{{ quiz }}</pre>
+  </section>
+
+  <section>
+    <h3>Create Study Guide</h3>
+    <button (click)="createStudyGuide()">Create Study Guide</button>
+    <pre>{{ studyGuide }}</pre>
+  </section>
+</div>

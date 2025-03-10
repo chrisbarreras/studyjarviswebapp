@@ -1,0 +1,55 @@
+// src/app/api.service.ts
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ApiService {
+  // Change the base URL as needed (note the port and base path)
+  private baseUrl = 'http://localhost:7000/default';
+
+  constructor(private http: HttpClient) {}
+
+  // User authentication
+  login(credentials: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/login`, credentials);
+  }
+
+  logout(): Observable<any> {
+    return this.http.post(`${this.baseUrl}/logout`, {});
+  }
+
+  // File upload & preparation
+  uploadFiles(formData: FormData): Observable<any> {
+    return this.http.post(`${this.baseUrl}/secure/files`, formData);
+  }
+
+  prepareFiles(): Observable<any> {
+    return this.http.post(`${this.baseUrl}/secure/files/prepare`, {});
+  }
+
+  // LLM endpoints
+  askQuestion(questionConfig: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/secure/jarvis/ask`, questionConfig, { responseType: 'text' });
+  }
+
+  createKeyPoints(): Observable<any> {
+    return this.http.post(`${this.baseUrl}/secure/jarvis/create-key-points`, {}, { responseType: 'text' });
+  }
+
+  createNotes(): Observable<any> {
+    return this.http.post(`${this.baseUrl}/secure/jarvis/create-notes`, {}, { responseType: 'text' });
+  }
+
+  createQuiz(quizConfig: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/secure/jarvis/create-quiz`, quizConfig, { responseType: 'text' });
+  }
+
+  createStudyGuide(): Observable<any> {
+    return this.http.post(`${this.baseUrl}/secure/jarvis/create-study-guide`, {}, { responseType: 'text' });
+  }
+
+  // Additional admin endpoints can be added here...
+}
