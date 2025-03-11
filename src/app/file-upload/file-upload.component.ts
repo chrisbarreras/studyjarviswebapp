@@ -7,8 +7,8 @@ import { ApiService } from '../api.service';
   templateUrl: './file-upload.component.html'
 })
 export class FileUploadComponent {
-  selectedFiles: FileList;
-  uploadMessage: string;
+  selectedFiles: FileList | null = null;
+  uploadMessage: string = "";
 
   constructor(private apiService: ApiService) {}
 

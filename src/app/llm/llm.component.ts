@@ -2,18 +2,20 @@
 import { Component } from '@angular/core';
 import { ApiService } from '../api.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-llm',
-  templateUrl: './llm.component.html'
+  templateUrl: './llm.component.html',
+  imports: [ReactiveFormsModule]
 })
 export class LlmComponent {
   questionForm: FormGroup;
-  questionAnswer: string;
-  notes: string;
-  keyPoints: string;
-  quiz: string;
-  studyGuide: string;
+  questionAnswer: string = "";
+  notes: string = "";
+  keyPoints: string = '';
+  quiz: string = "";
+  studyGuide: string = "";
 
   constructor(private apiService: ApiService, private fb: FormBuilder) {
     this.questionForm = this.fb.group({

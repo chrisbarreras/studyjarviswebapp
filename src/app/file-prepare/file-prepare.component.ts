@@ -7,7 +7,7 @@ import { ApiService } from '../api.service';
   templateUrl: './file-prepare.component.html'
 })
 export class FilePrepareComponent {
-  prepareMessage: string;
+  prepareMessage: string = "";
 
   constructor(private apiService: ApiService) {}
 

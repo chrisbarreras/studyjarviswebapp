@@ -3,14 +3,17 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from '../api.service';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './login.component.html'
+  templateUrl: './login.component.html',
+  imports: [CommonModule, ReactiveFormsModule]
 })
 export class LoginComponent {
   loginForm: FormGroup;
-  errorMessage: string;
+  errorMessage: string = "";
 
   constructor(
     private fb: FormBuilder,
