@@ -6,7 +6,8 @@ import { RouterModule } from '@angular/router'
   selector: 'app-root',
   imports: [RouterOutlet, RouterModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.sass'
+  styleUrls: ['./app.component.sass'],
+  standalone:true
 })
 export class AppComponent {
   title = 'studyjarviswebapp';
