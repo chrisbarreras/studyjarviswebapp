@@ -9,7 +9,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  imports: [CommonModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule],
+  standalone:true
 })
 export class LoginComponent {
   loginForm: FormGroup;
