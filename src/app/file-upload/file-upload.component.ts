@@ -1,4 +1,3 @@
-// src/app/file-upload/file-upload.component.ts
 import { Component } from '@angular/core';
 import { ApiService } from '../api.service';
 
@@ -18,18 +17,27 @@ export class FileUploadComponent {
 
   uploadFiles() {
     if (this.selectedFiles && this.selectedFiles.length > 0) {
-      const formData: FormData = new FormData();
+      let uploadedCount = 0;
+      let failedCount = 0;
+
       for (let i = 0; i < this.selectedFiles.length; i++) {
-        formData.append('files', this.selectedFiles[i], this.selectedFiles[i].name);
+        const file = this.selectedFiles[i];
+
+        this.apiService.uploadFiles(file).subscribe({
+          next: () => {
+            uploadedCount++;
+            this.updateUploadMessage(uploadedCount, failedCount);
+          },
+          error: () => {
+            failedCount++;
+            this.updateUploadMessage(uploadedCount, failedCount);
+          }
+        });
       }
-      this.apiService.uploadFiles(formData).subscribe({
-        next: () => {
-          this.uploadMessage = 'Files uploaded successfully!';
-        },
-        error: () => {
-          this.uploadMessage = 'Upload failed.';
-        }
-      });
     }
+  }
+
+  private updateUploadMessage(success: number, failed: number) {
+    this.uploadMessage = `Uploaded: ${success}, Failed: ${failed}`;
   }
 }

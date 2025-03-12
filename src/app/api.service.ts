@@ -1,6 +1,6 @@
 // src/app/api.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -8,13 +8,13 @@ import { Observable } from 'rxjs';
 })
 export class ApiService {
   // Change the base URL as needed (note the port and base path)
-  private baseUrl = 'http://localhost:7000/default';
+  private baseUrl = 'http://localhost:7000';
 
   constructor(private http: HttpClient) {}
 
   // User authentication
   login(credentials: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/login`, credentials);
+    return this.http.post(`${this.baseUrl}/login`, credentials)
   }
 
   logout(): Observable<any> {
@@ -22,8 +22,30 @@ export class ApiService {
   }
 
   // File upload & preparation
-  uploadFiles(formData: FormData): Observable<any> {
-    return this.http.post(`${this.baseUrl}/secure/files`, formData);
+  uploadFiles(file: File): Observable<any> {
+    const fileReader = new FileReader();
+
+    return new Observable(observer => {
+      fileReader.onload = () => {
+        const fileData = fileReader.result as ArrayBuffer;
+
+        this.http.post(`${this.baseUrl}/secure/files`, fileData, {
+          headers: {
+            'Content-Type': 'application/octet-stream'
+          },
+          responseType: 'text' // Adjust response type if needed
+        }).subscribe({
+          next: (response) => observer.next(response),
+          error: (error) => observer.error(error),
+          complete: () => observer.complete()
+        });
+      };
+
+      fileReader.onerror = (error) => observer.error(error);
+
+      // Read the file as ArrayBuffer (binary format)
+      fileReader.readAsArrayBuffer(file);
+    });
   }
 
   prepareFiles(): Observable<any> {

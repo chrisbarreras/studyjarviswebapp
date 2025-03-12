@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { ApiService } from '../api.service';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,8 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private apiService: ApiService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {
     this.loginForm = this.fb.group({
       username: [''],
@@ -28,9 +30,12 @@ export class LoginComponent {
   }
 
   onSubmit() {
+    console.log("Login Attempt");
     this.apiService.login(this.loginForm.value).subscribe({
       next: (response) => {
         console.log('Login successful', response);
+        const authToken = response.authToken + "";
+        this.authService.setToken(authToken);
         // Save user details as needed (e.g., in localStorage or a user service)
         this.router.navigate(['/upload']);
       },
