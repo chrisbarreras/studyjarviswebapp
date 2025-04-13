@@ -1,0 +1,113 @@
+<!-- Combined File Upload and Preparation Page -->
+<div class="file-container">
+  <div class="card">
+    <h1 class="title">StudyJarvis</h1>
+    <p class="subtitle">Upload and Prepare Files for AI Study Material</p>
+
+    <div class="file-section">
+      <h2>Upload Files</h2>
+      <input type="file" (change)="onFileChange($event)" multiple accept=".pdf,.pptx">
+      <button class="action-button" (click)="uploadFiles()">Upload</button>
+      <p class="status-message">{{ uploadMessage }}</p>
+    </div>
+
+    <div class="file-section">
+      <h2>Prepare Files</h2>
+      <button class="action-button" (click)="prepareFiles()">Prepare Files</button>
+      <p class="status-message">{{ prepareMessage }}</p>
+    </div>
+
+    <div class="file-section file-display">
+      <h2>Uploaded Files</h2>
+      <ul>
+        <li *ngFor="let file of uploadedFiles">{{ file.name }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<style>
+  body {
+    display: flex;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+    background: #f0f2f5;
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+
+  .file-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .card {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+
+  .title {
+    color: #4CAF50;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .subtitle {
+    color: #666;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+  }
+
+  .file-section {
+    margin-top: 1rem;
+    text-align: left;
+  }
+
+  .file-display {
+    border-top: 1px solid #ddd;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+  }
+
+  .action-button {
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 0.7rem;
+    width: 100%;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .action-button:hover {
+    background-color: #45a049;
+  }
+
+  .status-message {
+    margin-top: 0.5rem;
+    color: #d32f2f;
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    background: #e3f2fd;
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin-top: 0.3rem;
+  }
+</style>
