@@ -1,104 +1,36 @@
-<!-- src/app/login/login.component.html -->
 <div class="login-container">
-  <div class="login-card">
-    <h1 class="title">StudyJarvis</h1>
-    <p class="subtitle">Your AI-powered study companion</p>
-    <h2>Login to Upload Files</h2>
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="input-group">
-        <label>Username</label>
-        <input formControlName="username" type="text" placeholder="Enter your username">
-      </div>
+  <h2>Login</h2>
 
-      <div class="input-group">
-        <label>Password</label>
-        <input formControlName="password" type="password" placeholder="Enter your password">
-      </div>
-
-      <button class="login-button" type="submit">Login</button>
-    </form>
-
-    <div *ngIf="errorMessage" class="error-message">
-      {{ errorMessage }}
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input
+        id="username"
+        formControlName="username"
+        type="text"
+        placeholder="Enter username"
+      />
     </div>
-  </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input
+        id="password"
+        formControlName="password"
+        type="password"
+        placeholder="Enter password"
+      />
+    </div>
+
+    <button
+      class="login-button"
+      type="submit"
+      [disabled]="!loginForm.valid || !hasAnyInput()"
+      [ngClass]="{ 'active': hasAnyInput() }"
+    >
+      Login
+    </button>
+  </form>
+
+  <div *ngIf="errorMessage" class="message error-message">{{ errorMessage }}</div>
 </div>
-
-<style>
-  body {
-    display: flex;
-    height: 100vh;
-    align-items: center;
-    justify-content: center;
-    background: #f0f2f5;
-    margin: 0;
-    font-family: Arial, sans-serif;
-  }
-
-  .login-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-  }
-
-  .login-card {
-    background: #ffffff;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    width: 100%;
-    max-width: 360px;
-    text-align: center;
-  }
-
-  .title {
-    color: #4CAF50;
-    font-size: 2rem;
-    margin-bottom: 0.2rem;
-  }
-
-  .subtitle {
-    color: #666;
-    margin-bottom: 1.5rem;
-    font-size: 1rem;
-  }
-
-  .input-group {
-    margin-bottom: 1rem;
-    text-align: left;
-  }
-
-  label {
-    display: block;
-    margin-bottom: 0.3rem;
-    font-weight: bold;
-  }
-
-  input {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-  }
-
-  .login-button {
-    background-color: #4CAF50;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    padding: 0.7rem;
-    width: 100%;
-    cursor: pointer;
-    font-size: 1rem;
-  }
-
-  .login-button:hover {
-    background-color: #45a049;
-  }
-
-  .error-message {
-    color: #d32f2f;
-    margin-top: 1rem;
-  }
-</style>

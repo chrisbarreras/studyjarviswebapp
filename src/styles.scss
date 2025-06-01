@@ -1,0 +1,322 @@
+// styles.scss
+@use "sass:color";
+
+// Variables
+$calm-navy: #2E5C87; // Deeper, more serious blue for primary actions, headers
+$calm-navy-dark: #1e3c58; // Darker version for hover/active states
+$calm-sky-blue: #7FB3D5; // Lighter, calming blue for secondary actions, accents
+$calm-sky-blue-dark: #5a9ac6;
+$calm-light-bg: #F4F8FA; // Very light blue/gray for page backgrounds
+$calm-card-bg: #FFFFFF; // White for cards
+
+$text-primary-dark: #333333; // Dark gray for general text
+$text-secondary-gray: #555555; // Medium gray for less important text
+$text-on-primary-bg: #FFFFFF; // White text for use on dark blue backgrounds
+
+$border-color-light: #DDE6ED; // Light gray-blue border
+$error-red: #dc3545; // Standard error red
+$error-red-light-bg: #fdecea; // Light background for error messages
+$success-green: #28a745;
+$success-green-light-bg: #eaf6ec;
+
+$font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+
+// Global Resets & Base Styles
+body {
+  font-family: $font-family-base;
+  background-color: $calm-light-bg;
+  color: $text-primary-dark;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+h2, h3 {
+  color: $calm-navy;
+  font-weight: 600;
+}
+
+// Common Container Style (for login, upload, llm pages)
+.page-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: $calm-card-bg;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(46, 92, 135, 0.12); // Shadow using a hint of blue
+
+  h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+}
+
+// Form Group Styling
+.form-group {
+  margin-bottom: 1.25rem;
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: $text-secondary-gray;
+    font-size: 0.9rem;
+  }
+  input[type="text"],
+  input[type="password"],
+  input[type="file"] {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid $border-color-light;
+    border-radius: 6px;
+    font-size: 1rem;
+    color: $text-primary-dark;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+    &::placeholder {
+      color: #a0aec0; // Lighter placeholder text
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $calm-sky-blue;
+      box-shadow: 0 0 0 0.2rem rgba($calm-sky-blue, 0.25);
+    }
+  }
+  input[type="file"] {
+    padding: 0.6rem 0.75rem; // Slightly adjusted padding for file inputs
+  }
+}
+
+// Button Styling
+button, .button {
+  display: inline-block;
+  background-color: $calm-navy; // Primary action color by default
+  color: $text-on-primary-bg;
+  border: 1px solid $calm-navy;
+  border-radius: 6px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out, transform 0.1s ease;
+  width: 100%; // Full-width by default within their typical containers
+  margin-top: 0.75rem; // Standard top margin for buttons
+
+  &:hover:not(:disabled) {
+    background-color: $calm-navy-dark;
+    border-color: $calm-navy-dark;
+  }
+
+  &:active:not(:disabled) { // When actually pressed
+    transform: translateY(1px);
+    background-color: color.adjust($calm-navy-dark, $lightness: -5%);
+    border-color: color.adjust($calm-navy-dark, $lightness: -5%);
+  }
+
+  &:disabled {
+    background-color: #e9ecef; // Lighter gray for disabled
+    border-color: $border-color-light;
+    color: #adb5bd; // Muted text color
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  // Class for secondary action buttons
+  &.secondary {
+    background-color: $calm-sky-blue;
+    color: $calm-navy; // Darker text for contrast on lighter blue
+    border: 1px solid $calm-sky-blue;
+
+    &:hover:not(:disabled) {
+      background-color: $calm-sky-blue-dark;
+      border-color: $calm-sky-blue-dark;
+      color: $text-on-primary-bg; // Change text to white on darker hover
+    }
+    &:active:not(:disabled) {
+      transform: translateY(1px);
+      background-color: color.adjust($calm-sky-blue-dark, $lightness: -5%);
+      border-color: color.adjust($calm-sky-blue-dark, $lightness: -5%);
+    }
+  }
+}
+
+// Login Page Specific Styles
+.login-page-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  padding: 20px;
+  background-color: $calm-light-bg;
+}
+
+.login-container {
+  @extend .page-container;
+  max-width: 400px;
+
+  .title {
+    color: $calm-navy;
+    font-size: 2.25rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    text-align: center;
+  }
+  .subtitle {
+    color: $text-secondary-gray;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+    text-align: center;
+  }
+  // Login button is primary by default
+}
+
+// File Management (Upload) Page Styles
+.upload-container {
+  @extend .page-container;
+
+  .file-input-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .upload-button {
+    // Primary by default
+  }
+  .prepare-button {
+    @extend .secondary; // Make prepare button use secondary style
+  }
+
+  .uploaded-files-list {
+    margin-top: 1.5rem;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid $border-color-light;
+    border-radius: 6px;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    background-color: color.adjust($calm-light-bg, $lightness: 2%);
+    li {
+      padding: 0.3rem 0.1rem;
+      border-bottom: 1px solid $border-color-light;
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+}
+
+// LLM Page Styles
+.llm-container {
+  @extend .page-container;
+  max-width: 700px; // LLM page can be wider
+
+  section {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid $border-color-light;
+    &:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+  }
+
+  h3 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+  }
+
+  form {
+    display: flex;
+    gap: 0.75rem; // Increased gap
+    margin-bottom: 1rem;
+    align-items: center; // Align items vertically
+    input[formControlName="question"] {
+      flex-grow: 1;
+    }
+    button[type="submit"] { // Ask button
+      width: auto; // Shrink to content size
+      padding: 0.75rem 1.25rem; // Adjusted padding
+      margin-top: 0; // Remove top margin when next to input
+      // Primary by default
+    }
+  }
+
+  section > button:not([type="submit"]) { // Create Notes, Key Points etc.
+    // Primary by default. If some should be secondary, add .secondary class in HTML.
+    // Example: <button (click)="createKeyPoints()" class="secondary">Create Key Points</button>
+    margin-bottom: 0.5rem; // Space below button if text follows
+  }
+
+  pre {
+      background-color: color.adjust($calm-light-bg, $lightness: 2%);
+      padding: 1rem;
+      border-radius: 6px;
+      border: 1px solid $border-color-light;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-size: 0.9rem;
+      color: $text-secondary-gray;
+      margin-top: 0.75rem; // Space above pre block
+    }
+}
+
+// Message Styling (Error, Success, Info)
+.message {
+  padding: 0.75rem 1rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem; // Consistent bottom margin
+  border-radius: 6px;
+  font-size: 0.9rem;
+  text-align: left; // Default to left-align for messages like upload status
+
+  &.error-message {
+    color: $error-red;
+    background-color: $error-red-light-bg;
+    border: 1px solid color.adjust($error-red, $lightness: -5%);
+  }
+ &.success-message {
+     color: color.adjust($success-green, $lightness: -10%); // Adjusted this one too
+     background-color: $success-green-light-bg;
+     border: 1px solid color.adjust($success-green, $lightness: -5%);
+ }
+  // Login error message might need to be centered
+  .login-container & {
+    text-align: center;
+  }
+}
+
+
+// Loading Overlay Styling (Consistent for Uploads and LLM)
+.loading-overlay, .overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba($calm-card-bg, 0.88); // Slightly more opaque
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000; // Ensure it's on top
+
+  .spinner, // LLM page uses this structure
+  & > span // For Uploads page if it directly contains text in a span
+  {
+    font-size: 1.4rem; // Slightly smaller
+    font-weight: 500; // Normal weight
+    color: $calm-navy;
+    padding: 1.75rem 2.25rem;
+    background-color: $calm-card-bg;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(46, 92, 135, 0.15);
+  }
+  // If Uploads page has direct text (not in a span)
+  &:not(:has(.spinner)):not(:has(span)) {
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: $calm-navy;
+  }
+}

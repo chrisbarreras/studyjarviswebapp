@@ -22,29 +22,15 @@ export class ApiService {
   }
 
   // File upload & preparation
-  uploadFiles(file: File): Observable<any> {
-    const fileReader = new FileReader();
+  uploadFiles(files: FileList): Observable<any> {
+    const formData = new FormData();
 
-    return new Observable(observer => {
-      fileReader.onload = () => {
-        const fileData = fileReader.result as ArrayBuffer;
+    for (let i = 0; i < files.length; i++) {
+      formData.append('files', files[i]); // Append each file under the same field name
+    }
 
-        this.http.post(`${this.baseUrl}/secure/files`, fileData, {
-          headers: {
-            'Content-Type': 'application/octet-stream'
-          },
-          responseType: 'text' // Adjust response type if needed
-        }).subscribe({
-          next: (response) => observer.next(response),
-          error: (error) => observer.error(error),
-          complete: () => observer.complete()
-        });
-      };
-
-      fileReader.onerror = (error) => observer.error(error);
-
-      // Read the file as ArrayBuffer (binary format)
-      fileReader.readAsArrayBuffer(file);
+    return this.http.post(`${this.baseUrl}/secure/files`, formData, {
+      responseType: 'text' // or 'json', depending on your backend
     });
   }
 
