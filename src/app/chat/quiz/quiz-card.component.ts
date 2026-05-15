@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, EventEmitter, HostListener, inject, Input, Output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, EventEmitter, HostListener, inject, input, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule, CheckCircle2, XCircle, RotateCcw, Sparkles, ArrowRight, HelpCircle } from 'lucide-angular';
@@ -13,7 +13,7 @@ import { ApiService } from '../../api.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QuizCardComponent {
-  @Input({ required: true }) quiz!: Quiz;
+  readonly quiz = input.required<Quiz>();
   @Output() quizChanged = new EventEmitter<Quiz>();
   @Output() retake = new EventEmitter<void>();
   @Output() harder = new EventEmitter<void>();
@@ -32,14 +32,14 @@ export class QuizCardComponent {
   readonly ArrowRight = ArrowRight;
   readonly HelpCircle = HelpCircle;
 
-  readonly current = computed<Question | undefined>(() => this.quiz.questions[this.quiz.currentIndex]);
-  readonly total = computed<number>(() => this.quiz.questions.length);
-  readonly score = computed<number>(() => this.quiz.questions.filter(q => q.correct).length);
+  readonly current = computed<Question | undefined>(() => this.quiz().questions[this.quiz().currentIndex]);
+  readonly total = computed<number>(() => this.quiz().questions.length);
+  readonly score = computed<number>(() => this.quiz().questions.filter(q => q.correct).length);
   readonly percentage = computed<number>(() => Math.round((this.score() / Math.max(this.total(), 1)) * 100));
 
   @HostListener('document:keydown', ['$event'])
   onKeydown(event: KeyboardEvent): void {
-    if (this.quiz.completed) return;
+    if (this.quiz().completed) return;
     const q = this.current();
     if (!q) return;
     const target = event.target as HTMLElement | null;
@@ -102,26 +102,29 @@ export class QuizCardComponent {
       correct,
       explanation: explanationOverride ?? q.explanation,
     };
-    const questions = this.quiz.questions.map(x => x.id === q.id ? updatedQ : x);
-    const completed = this.quiz.currentIndex >= questions.length - 1 ? false : this.quiz.completed;
-    this.quizChanged.emit({ ...this.quiz, questions, completed });
+    const quiz = this.quiz();
+    const questions = quiz.questions.map(x => x.id === q.id ? updatedQ : x);
+    const completed = quiz.currentIndex >= questions.length - 1 ? false : quiz.completed;
+    this.quizChanged.emit({ ...quiz, questions, completed });
     this.justSubmitted.set(true);
   }
 
   next(): void {
-    if (this.quiz.currentIndex < this.quiz.questions.length - 1) {
-      this.quizChanged.emit({ ...this.quiz, currentIndex: this.quiz.currentIndex + 1 });
+    const quiz = this.quiz();
+    if (quiz.currentIndex < quiz.questions.length - 1) {
+      this.quizChanged.emit({ ...quiz, currentIndex: quiz.currentIndex + 1 });
       this.selectedKey.set(null);
       this.freeAnswer.set('');
       this.justSubmitted.set(false);
     } else {
-      this.quizChanged.emit({ ...this.quiz, completed: true });
+      this.quizChanged.emit({ ...quiz, completed: true });
     }
   }
 
   restart(): void {
-    const reset = this.quiz.questions.map(q => ({ ...q, answered: false, correct: undefined, userAnswer: undefined }));
-    this.quizChanged.emit({ ...this.quiz, questions: reset, currentIndex: 0, completed: false });
+    const quiz = this.quiz();
+    const reset = quiz.questions.map(q => ({ ...q, answered: false, correct: undefined, userAnswer: undefined }));
+    this.quizChanged.emit({ ...quiz, questions: reset, currentIndex: 0, completed: false });
     this.selectedKey.set(null);
     this.freeAnswer.set('');
     this.justSubmitted.set(false);
@@ -159,13 +162,14 @@ export class QuizCardComponent {
   dotClass(qq: Question, i: number): string {
     if (qq.answered && qq.correct) return 'bg-accent-500';
     if (qq.answered && qq.correct === false) return 'bg-danger-500';
-    if (!qq.answered && i === this.quiz.currentIndex && !this.quiz.completed) return 'bg-primary-400';
+    const quiz = this.quiz();
+    if (!qq.answered && i === quiz.currentIndex && !quiz.completed) return 'bg-primary-400';
     return 'bg-border';
   }
 
   copyAsMarkdown(): void {
     const lines: string[] = ['## Quiz Results', '', `Score: ${this.score()} / ${this.total()} (${this.percentage()}%)`, ''];
-    this.quiz.questions.forEach((q, i) => {
+    this.quiz().questions.forEach((q, i) => {
       lines.push(`### ${i + 1}. ${q.stem}`);
       if (q.choices) {
         q.choices.forEach(c => lines.push(`- ${c.key}) ${c.text}`));

@@ -9,11 +9,11 @@
         Quiz · {{ total() }} question{{ total() === 1 ? '' : 's' }}
       </div>
       <div class="text-xs text-muted">
-        {{ quiz.kind === 'multiple-choice' ? 'Multiple choice' : 'Short answer' }}
+        {{ quiz().kind === 'multiple-choice' ? 'Multiple choice' : 'Short answer' }}
       </div>
     </div>
     <div class="flex items-center gap-1" aria-hidden="true">
-      @for (qq of quiz.questions; track qq.id; let i = $index) {
+      @for (qq of quiz().questions; track qq.id; let i = $index) {
         <span
           class="h-2 w-2 rounded-full"
           [ngClass]="dotClass(qq, i)"
@@ -22,10 +22,10 @@
     </div>
   </header>
 
-  @if (!quiz.completed && q) {
-    <section class="px-5 py-5" role="radiogroup" [attr.aria-label]="'Question ' + (quiz.currentIndex + 1) + ' of ' + total()">
+  @if (!quiz().completed && q) {
+    <section class="px-5 py-5" role="radiogroup" [attr.aria-label]="'Question ' + (quiz().currentIndex + 1) + ' of ' + total()">
       <div class="text-[11px] font-semibold uppercase tracking-wider text-muted mb-1">
-        Question {{ quiz.currentIndex + 1 }} of {{ total() }}
+        Question {{ quiz().currentIndex + 1 }} of {{ total() }}
       </div>
       <div class="text-base font-medium text-ink leading-snug mb-4">{{ q.stem }}</div>
 
@@ -110,7 +110,7 @@
             (click)="next()"
             class="inline-flex items-center gap-1.5 rounded-md bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700 transition-colors"
           >
-            @if (quiz.currentIndex < quiz.questions.length - 1) { Next } @else { Finish }
+            @if (quiz().currentIndex < quiz().questions.length - 1) { Next } @else { Finish }
             <lucide-icon [img]="ArrowRight" [size]="14"></lucide-icon>
           </button>
         }
@@ -128,7 +128,7 @@
       }
 
       <ul class="mt-5 space-y-3 text-left">
-        @for (qq of quiz.questions; track qq.id; let i = $index) {
+        @for (qq of quiz().questions; track qq.id; let i = $index) {
           <li class="rounded-md border border-border p-3">
             <div class="flex items-start gap-2">
               <span

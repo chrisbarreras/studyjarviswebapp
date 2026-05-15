@@ -1,3 +1,4 @@
+import { ComponentRef } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { QuizCardComponent } from './quiz-card.component';
@@ -11,13 +12,16 @@ function makeQuiz(): Quiz {
 
 describe('QuizCardComponent', () => {
   let component: QuizCardComponent;
+  let componentRef: ComponentRef<QuizCardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [QuizCardComponent, HttpClientTestingModule],
     }).compileComponents();
-    component = TestBed.createComponent(QuizCardComponent).componentInstance;
-    component.quiz = makeQuiz();
+    const fixture = TestBed.createComponent(QuizCardComponent);
+    component = fixture.componentInstance;
+    componentRef = fixture.componentRef;
+    componentRef.setInput('quiz', makeQuiz());
   });
 
   it('creates and exposes computed score/percentage', () => {
@@ -50,7 +54,7 @@ describe('QuizCardComponent', () => {
   });
 
   it('next on the last question marks the quiz completed', () => {
-    component.quiz = { ...component.quiz, currentIndex: 1 };
+    componentRef.setInput('quiz', { ...component.quiz(), currentIndex: 1 });
     let emitted: Quiz | undefined;
     component.quizChanged.subscribe(q => { emitted = q; });
     component.next();
@@ -62,7 +66,7 @@ describe('QuizCardComponent', () => {
     answered.questions[0].answered = true;
     answered.questions[0].correct = true;
     answered.currentIndex = 1;
-    component.quiz = answered;
+    componentRef.setInput('quiz', answered);
     let emitted: Quiz | undefined;
     component.quizChanged.subscribe(q => { emitted = q; });
     component.restart();
@@ -72,8 +76,32 @@ describe('QuizCardComponent', () => {
     expect(emitted!.questions[0].correct).toBeUndefined();
   });
 
+  // Regression for the "Submit doesn't advance / show feedback" bug.
+  // Before the fix, `quiz` was an `@Input()` plain property and the component
+  // read it from inside `computed()` signals. Computed only tracks signal
+  // reads, so a new quiz object handed in by the parent never invalidated the
+  // cached `current()`/`total()`/etc. After converting to `input.required()`,
+  // the computeds re-evaluate when the input signal updates.
+  it('current() reflects updates to the quiz input', () => {
+    const initial = makeQuiz();
+    componentRef.setInput('quiz', initial);
+    expect(component.current()?.answered).toBeFalsy();
+
+    const updated: Quiz = {
+      ...initial,
+      questions: initial.questions.map((q, i) =>
+        i === 0 ? { ...q, answered: true, correct: true, userAnswer: 'A' } : q
+      ),
+    };
+    componentRef.setInput('quiz', updated);
+
+    expect(component.current()?.answered)
+      .withContext('current() must re-evaluate after the quiz input changes')
+      .toBeTrue();
+  });
+
   it('choiceClass returns selected/unselected/correct/wrong variants', () => {
-    const q = component.quiz.questions[0]; // correctKey = 'A'
+    const q = component.quiz().questions[0]; // correctKey = 'A'
     component.selectedKey.set('A');
     expect(component.choiceClass(q, 'A')).toContain('border-primary-500');
 

@@ -177,6 +177,45 @@ describe('QuizParserService', () => {
     expect(quiz.questions[0].choices?.[0]).toEqual({ key: 'A', text: 'original' });
   });
 
+  // Regression for the "asked for 5, got 10" bug. When Gemini produces an
+  // answers section that is just a plain "Answers:" line — neither a markdown
+  // heading nor a bolded label — the parser fails to split, treats the
+  // numbered answer lines as additional questions, and returns 2× the count.
+  it('treats plain "Answers:" line as a section divider, not as more questions', () => {
+    const md = `1. What is 1+1?
+   A) 1
+   B) 2
+   C) 3
+2. What is 2+2?
+   A) 3
+   B) 4
+   C) 5
+3. What is 3+3?
+   A) 5
+   B) 6
+   C) 7
+4. What is 4+4?
+   A) 7
+   B) 8
+   C) 9
+5. What is 5+5?
+   A) 9
+   B) 10
+   C) 11
+
+Answers:
+1. B
+2. B
+3. B
+4. B
+5. B`;
+    const quiz = service.parse(md)!;
+    expect(quiz).not.toBeNull();
+    expect(quiz.questions.length)
+      .withContext('answers section should not be parsed as more questions')
+      .toBe(5);
+  });
+
   it('handles missing answers section by leaving correctKey undefined', () => {
     const md = `## Questions:
 1. Q1

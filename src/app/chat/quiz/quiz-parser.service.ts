@@ -59,6 +59,11 @@ export class QuizParserService {
     if (alt && alt.index != null) {
       return [text.slice(0, alt.index), text.slice(alt.index + alt[0].length)];
     }
+    const plainRe = /^[ \t]{0,3}answers?[ \t]*:[ \t]*$/im;
+    const plain = text.match(plainRe);
+    if (plain && plain.index != null) {
+      return [text.slice(0, plain.index), text.slice(plain.index + plain[0].length)];
+    }
     return [text, ''];
   }
 
